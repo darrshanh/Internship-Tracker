@@ -48,27 +48,40 @@
         const scriptURL = "https://script.google.com/macros/s/AKfycbwXGV_Quz5yH0g5l7BfUm5vmvBSnVRw9Q4RdzEsIFHYsYQ3bEY5TK3ZKHsowOEdtvY92g/exec"; // Replace with your Web App URL
 
         async function submitForm(event) {
-            event.preventDefault();
+    event.preventDefault();
+    
+    let formData = {
+        reg_no: document.getElementById("reg_no").value,
+        name: document.getElementById("name").value,
+        mobile: document.getElementById("mobile").value,
+        section: document.getElementById("section").value,
+        internship_status: document.getElementById("internship_status").value,
+        title: document.getElementById("title").value,
+        period: document.getElementById("period").value,
+        start_date: document.getElementById("start_date").value,
+        end_date: document.getElementById("end_date").value,
+        company: document.getElementById("company").value,
+        placement_mode: document.getElementById("placement_mode").value,
+        stipend: document.getElementById("stipend").value,
+        type: document.getElementById("type").value,
+        location: document.getElementById("location").value,
+        permission_letter: document.getElementById("permission_letter").value,
+        completion_cert: document.getElementById("completion_cert").value,
+        report: document.getElementById("report").value,
+        student_feedback: document.getElementById("student_feedback").value,
+        employer_feedback: document.getElementById("employer_feedback").value
+    };
 
-            const formData = new FormData(document.getElementById("internshipForm"));
-            const jsonObject = {};
-            formData.forEach((value, key) => jsonObject[key] = value);
+    fetch("https://script.google.com/macros/s/AKfycbwXGV_Quz5yH0g5l7BfUm5vmvBSnVRw9Q4RdzEsIFHYsYQ3bEY5TK3ZKHsowOEdtvY92g/exec", {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: { "Content-Type": "application/json" }
+    })
+    .then(response => response.text())
+    .then(data => alert(data))
+    .catch(error => console.error("Error:", error));
+}
 
-            try {
-                let response = await fetch(scriptURL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(jsonObject),
-                });
-
-                let result = await response.text();
-                alert(result); // Show response from Apps Script
-                document.getElementById("internshipForm").reset();
-            } catch (error) {
-                console.error("Error:", error);
-                alert("Failed to submit form. Try again.");
-            }
-        }
 
         async function loadRegisterNumbers() {
             try {
