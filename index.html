@@ -44,90 +44,72 @@
             background-color: #218838;
         }
     </style>
-    <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbwkLduGhmX2mjpwcGide2AkgN2RlGlIB8iiQsIokb5GVEK1Cxj2p4gFsRyBQ27zU5183A/exec"; // Replace with your Web App URL
+<script>
+        const scriptURL = "YOUR_NEW_DEPLOYMENT_URL_HERE"; // Update this with the correct URL
 
-    async function submitForm(event) {
-    event.preventDefault(); // Prevent default form submission
-    
-    let formData = {
-        reg_no: document.getElementById("reg_no").value,
-        name: document.getElementById("name").value,
-        mobile: document.getElementById("mobile").value,
-        section: document.getElementById("section").value,
-        internship_status: document.getElementById("internship_status").value,
-        title: document.getElementById("title").value,
-        period: document.getElementById("period").value,
-        start_date: document.getElementById("start_date").value,
-        end_date: document.getElementById("end_date").value,
-        company: document.getElementById("company").value,
-        placement_mode: document.getElementById("placement_mode").value,
-        stipend: document.getElementById("stipend").value,
-        type: document.getElementById("type").value,
-        location: document.getElementById("location").value,
-        permission_letter: document.getElementById("permission_letter").value,
-        completion_cert: document.getElementById("completion_cert").value,
-        report: document.getElementById("report").value,
-        student_feedback: document.getElementById("student_feedback").value,
-        employer_feedback: document.getElementById("employer_feedback").value
-    };
+        // Load Register Numbers into Dropdown
+        function loadRegisterNumbers() {
+            fetch(`${scriptURL}?action=getRegisterNumbers`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "error") {
+                        console.error("Error:", data.message);
+                        return;
+                    }
 
-    try {
-        let response = await fetch(scriptURL, {
-            method: "POST",
-            body: JSON.stringify(formData),
-            headers: { "Content-Type": "application/json" }
+                    let regNoDropdown = document.getElementById("regNo");
+                    regNoDropdown.innerHTML = '<option value="">Select Register Number</option>';
+
+                    for (let regNo in data) {
+                        let option = document.createElement("option");
+                        option.value = regNo;
+                        option.textContent = `${regNo} - ${data[regNo]}`;
+                        regNoDropdown.appendChild(option);
+                    }
+                })
+                .catch(error => console.error("Error fetching register numbers:", error));
+        }
+
+        // Autofill name when a register number is selected
+        document.getElementById("regNo").addEventListener("change", function() {
+            let selectedRegNo = this.value;
+            let nameField = document.getElementById("name");
+
+            fetch(`${scriptURL}?action=getRegisterNumbers`)
+                .then(response => response.json())
+                .then(data => {
+                    nameField.value = data[selectedRegNo] || "";
+                })
+                .catch(error => console.error("Error fetching name:", error));
         });
 
-        let result = await response.json();
-        alert(result.message); // Show success/error message
-        if (result.status === "success") {
-            document.getElementById("internshipForm").reset(); // Reset the form after successful submission
-        }
-    } catch (error) {
-        console.error("Error submitting form:", error);
-        alert("Failed to submit the form. Please try again.");
-    }
-}
+        // Submit Form Data
+        document.getElementById("internshipForm").addEventListener("submit", function(event) {
+            event.preventDefault();
 
+            let formData = {};
+            new FormData(this).forEach((value, key) => {
+                formData[key] = value;
+            });
 
-    async function loadRegisterNumbers() {
-    try {
-        let response = await fetch(scriptURL + "?action=getRegisterNumbers");
-        let data = await response.json();
-        
-        let regDropdown = document.getElementById("reg_no");
-        regDropdown.innerHTML = "<option value=''>Select Register Number</option>";
-        for (let regNo in data) {
-            let option = document.createElement("option");
-            option.value = regNo;
-            option.textContent = regNo;
-            regDropdown.appendChild(option);
-        }
-    } catch (error) {
-        console.error("Error loading register numbers:", error);
-    }
-}
+            fetch(scriptURL, {
+                method: "POST",
+                body: JSON.stringify(formData),
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if (data.status === "success") {
+                    document.getElementById("internshipForm").reset();
+                }
+            })
+            .catch(error => console.error("Error submitting form:", error));
+        });
 
-
-    function populateName() {
-    let regNo = document.getElementById("reg_no").value;
-    fetch(scriptURL + "?action=getRegisterNumbers")
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById("name").value = data[regNo] || "";
-        })
-        .catch(error => console.error("Error fetching name:", error));
-}
-
-
-    // Wait for the page to load before adding event listeners
-    window.onload = function() {
-        loadRegisterNumbers();
-        document.getElementById("internshipForm").addEventListener("submit", submitForm);
-    };
-</script>
-
+        // Load register numbers on page load
+        window.onload = loadRegisterNumbers;
+    </script>
 </head>
 
 <body>
