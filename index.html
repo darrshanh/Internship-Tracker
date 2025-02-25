@@ -74,6 +74,7 @@
 
         fetch(scriptURL, {
             method: "POST",
+            mode: "no-cors", // Temporary bypass for CORS issues
             body: JSON.stringify(formData),
             headers: { "Content-Type": "application/json" }
         })
