@@ -23,7 +23,7 @@
             display: block;
             margin-top: 10px;
         }
-        input, select {
+        input, select, textarea {
             width: 100%;
             padding: 8px;
             margin: 5px 0;
@@ -48,40 +48,42 @@
         const scriptURL = "https://script.google.com/macros/s/AKfycbwXGV_Quz5yH0g5l7BfUm5vmvBSnVRw9Q4RdzEsIFHYsYQ3bEY5TK3ZKHsowOEdtvY92g/exec"; // Replace with your Web App URL
 
         async function submitForm(event) {
-    event.preventDefault();
-    
-    let formData = {
-        reg_no: document.getElementById("reg_no").value,
-        name: document.getElementById("name").value,
-        mobile: document.getElementById("mobile").value,
-        section: document.getElementById("section").value,
-        internship_status: document.getElementById("internship_status").value,
-        title: document.getElementById("title").value,
-        period: document.getElementById("period").value,
-        start_date: document.getElementById("start_date").value,
-        end_date: document.getElementById("end_date").value,
-        company: document.getElementById("company").value,
-        placement_mode: document.getElementById("placement_mode").value,
-        stipend: document.getElementById("stipend").value,
-        type: document.getElementById("type").value,
-        location: document.getElementById("location").value,
-        permission_letter: document.getElementById("permission_letter").value,
-        completion_cert: document.getElementById("completion_cert").value,
-        report: document.getElementById("report").value,
-        student_feedback: document.getElementById("student_feedback").value,
-        employer_feedback: document.getElementById("employer_feedback").value
-    };
+            event.preventDefault();
+            
+            let formData = {
+                reg_no: document.getElementById("reg_no").value,
+                name: document.getElementById("name").value,
+                mobile: document.getElementById("mobile").value,
+                section: document.getElementById("section").value,
+                internship_status: document.getElementById("internship_status").value,
+                title: document.getElementById("title").value,
+                period: document.getElementById("period").value,
+                start_date: document.getElementById("start_date").value,
+                end_date: document.getElementById("end_date").value,
+                company: document.getElementById("company").value,
+                placement_mode: document.getElementById("placement_mode").value,
+                stipend: document.getElementById("stipend").value,
+                type: document.getElementById("type").value,
+                location: document.getElementById("location").value,
+                permission_letter: document.getElementById("permission_letter").value,
+                completion_cert: document.getElementById("completion_cert").value,
+                report: document.getElementById("report").value,
+                student_feedback: document.getElementById("student_feedback").value,
+                employer_feedback: document.getElementById("employer_feedback").value
+            };
 
-    fetch("https://script.google.com/macros/s/AKfycbwXGV_Quz5yH0g5l7BfUm5vmvBSnVRw9Q4RdzEsIFHYsYQ3bEY5TK3ZKHsowOEdtvY92g/exec", {
-        method: "POST",
-        body: JSON.stringify(formData),
-        headers: { "Content-Type": "application/json" }
-    })
-    .then(response => response.text())
-    .then(data => alert(data))
-    .catch(error => console.error("Error:", error));
-}
-
+            fetch(scriptURL, {
+                method: "POST",
+                body: JSON.stringify(formData),
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                document.getElementById("internshipForm").reset();
+            })
+            .catch(error => console.error("Error:", error));
+        }
 
         async function loadRegisterNumbers() {
             try {
@@ -126,6 +128,63 @@
 
         <label for="mobile">Mobile No.</label>
         <input type="tel" id="mobile" name="mobile" pattern="[0-9]{10}" required>
+
+        <label for="section">Section</label>
+        <input type="text" id="section" name="section" required>
+
+        <label for="internship_status">Obtained Internship or Not</label>
+        <select id="internship_status" name="internship_status" required>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select>
+
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="period">Period (in months)</label>
+        <input type="number" id="period" name="period" required>
+
+        <label for="start_date">Start Date</label>
+        <input type="date" id="start_date" name="start_date" required>
+
+        <label for="end_date">End Date</label>
+        <input type="date" id="end_date" name="end_date" required>
+
+        <label for="company">Company Name</label>
+        <input type="text" id="company" name="company" required>
+
+        <label for="placement_mode">Placement thru College / Outside</label>
+        <select id="placement_mode" name="placement_mode" required>
+            <option value="College">College</option>
+            <option value="Outside">Outside</option>
+        </select>
+
+        <label for="stipend">Stipend (In Rs.)</label>
+        <input type="number" id="stipend" name="stipend">
+
+        <label for="type">Research / Industry</label>
+        <select id="type" name="type" required>
+            <option value="Research">Research</option>
+            <option value="Industry">Industry</option>
+        </select>
+
+        <label for="location">Location</label>
+        <input type="text" id="location" name="location" required>
+
+        <label for="permission_letter">Permission Letter</label>
+        <input type="text" id="permission_letter" name="permission_letter">
+
+        <label for="completion_cert">Completion Certificate</label>
+        <input type="text" id="completion_cert" name="completion_cert">
+
+        <label for="report">Report</label>
+        <input type="text" id="report" name="report">
+
+        <label for="student_feedback">Student Feedback</label>
+        <textarea id="student_feedback" name="student_feedback"></textarea>
+
+        <label for="employer_feedback">Employer Feedback</label>
+        <textarea id="employer_feedback" name="employer_feedback"></textarea>
 
         <button type="submit">Submit</button>
     </form>
